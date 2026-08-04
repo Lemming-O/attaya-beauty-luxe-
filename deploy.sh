@@ -1,37 +1,40 @@
-#!/bin/sh
-echo "========================================================"
-echo "  ATTAYA BEAUTY LUXE BLORA - PRODUCTION DEPLOYMENT BUILD"
-echo "========================================================"
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Step 1: Check dependencies & linting
-echo "[1/4] Running TypeScript Linting & Code Verification..."
-npm run lint
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT_DIR"
 
-if [ $? -ne 0 ]; then
-  echo "Error: Code verification failed. Fix lint issues first."
-  exit 1
+if [ -f .env ]; then
+  set -a
+  . ./.env
+  set +a
 fi
 
-# Step 2: Build frontend distribution bundle
-echo "[2/4] Compiling Production Bundle with Vite..."
-npm run build
+PORT="${PORT:-3000}"
 
-if [ $? -ne 0 ]; then
-  echo "Error: Build failed."
-  exit 1
-fi
+ echo "========================================================"
+ echo "  ATTAYA BEAUTY LUXE BLORA - PRODUCTION DEPLOYMENT BUILD"
+ echo "========================================================"
 
-# Step 3: Docker container deployment check (if Docker available)
-echo "[3/4] Preparing Docker Image Deployment..."
-if command -v docker >/dev/null 2>&1; then
-  echo "Building Docker container image: attaya-beauty-luxe:latest..."
-  docker build -t attaya-beauty-luxe:latest .
-  echo "Docker build completed successfully."
-else
-  echo "Docker CLI not detected in container environment, skipping local docker image build."
-fi
+ echo "[1/4] Installing dependencies..."
+ npm ci
 
-echo "[4/4] Production deployment readiness verified."
-echo "========================================================"
-echo "  SUCCESS: Attaya Beauty Luxe is 100% Production Ready!"
-echo "========================================================"
+ echo "[2/4] Running TypeScript verification..."
+ npm run lint
+
+ echo "[3/4] Compiling production bundle..."
+ npm run build
+
+ if command -v docker >/dev/null 2>&1; then
+   echo "[4/4] Building and starting Docker container..."
+   docker compose build --no-cache
+   docker compose up -d --remove-orphans
+   curl -fsS "http://localhost:${PORT}" >/dev/null
+   echo "Container is healthy on port ${PORT}."
+ else
+   echo "Docker CLI not detected, skipping container deployment."
+ fi
+
+ echo "========================================================"
+ echo "  SUCCESS: Attaya Beauty Luxe is production deployment ready!"
+ echo "========================================================"
