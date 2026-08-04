@@ -15,7 +15,7 @@ const KEYS = {
   ADMIN_PASS: 'attaya_admin_pass_v1',
 };
 
-const envAdminPassword = ((import.meta as unknown) as { env?: Record<string, string> }).env?.VITE_ADMIN_PASSWORD || 'ATTAYA2026';
+const envAdminPassword = ((import.meta as unknown) as { env?: Record<string, string> }).env?.VITE_ADMIN_PASSWORD?.trim() || '';
 
 // Initialize default storage if empty
 export const initializeStorage = () => {
