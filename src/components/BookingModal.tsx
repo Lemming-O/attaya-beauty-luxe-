@@ -15,8 +15,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   onClose,
   onConfirmBooking,
 }) => {
-  if (!treatment) return null;
-
   const [step, setStep] = useState<1 | 2>(1);
   const [selectedDate, setSelectedDate] = useState(() => {
     const tomorrow = new Date();
@@ -24,12 +22,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     return tomorrow.toISOString().split('T')[0];
   });
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('14:00 - 15:30 WIB');
-  const [selectedTherapist, setSelectedTherapist] = useState(treatment.doctorSpecialist);
+  const [selectedTherapist, setSelectedTherapist] = useState(treatment?.doctorSpecialist || '');
   const [patientName, setPatientName] = useState(user.name);
   const [patientPhone, setPatientPhone] = useState(user.phone);
   const [patientEmail, setPatientEmail] = useState(user.email);
   const [notes, setNotes] = useState('');
   const [confirmedBooking, setConfirmedBooking] = useState<TreatmentBooking | null>(null);
+
+  if (!treatment) return null;
 
   const timeSlots = [
     '09:30 - 11:00 WIB',

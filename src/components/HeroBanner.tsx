@@ -3,13 +3,13 @@ import { Sparkles, Calendar, ArrowRight, ShieldCheck, Crown, Star } from 'lucide
 
 interface HeroBannerProps {
   onExploreProducts: () => void;
-  onOpenAIAdvisor: () => void;
+  onStartAIScan: () => void;
   onBookClinic: () => void;
 }
 
 export const HeroBanner: React.FC<HeroBannerProps> = ({
   onExploreProducts,
-  onOpenAIAdvisor,
+  onStartAIScan,
   onBookClinic,
 }) => {
   return (
@@ -45,7 +45,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
               <button
-                onClick={onOpenAIAdvisor}
+                onClick={onStartAIScan}
                 className="w-full sm:w-auto px-8 py-4 bg-gold-gradient text-white rounded-xl font-semibold text-sm shadow-luxe hover:opacity-95 transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
               >
                 <Sparkles className="w-5 h-5 text-white animate-pulse" />

@@ -129,6 +129,28 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
                       <span>Metode: <strong className="text-gray-800">{o.paymentMethod}</strong></span>
                       <span>Total: <strong className="text-[#8C6B1F]">{formatIDR(o.grandTotal)}</strong></span>
                     </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-gray-50 p-2 rounded-lg border border-gray-200">
+                      <div>
+                        <span className="text-gray-500 block">Status bayar:</span>
+                        <span className="font-bold text-emerald-700 uppercase">{o.paymentStatus || 'pending'}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 block">Invoice:</span>
+                        <span className="font-mono font-bold text-[#8C6B1F]">{o.invoiceNumber || 'AUTO-GENERATED'}</span>
+                      </div>
+                    </div>
+
+                    {o.paymentHistory && o.paymentHistory.length > 0 && (
+                      <div className="bg-amber-50 p-2 rounded-lg border border-amber-200 text-[11px] space-y-1">
+                        {o.paymentHistory.slice(0, 2).map((entry) => (
+                          <div key={entry.id} className="flex justify-between gap-2">
+                            <span className="text-amber-900">{entry.note}</span>
+                            <span className="font-bold text-amber-950 uppercase">{entry.status}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

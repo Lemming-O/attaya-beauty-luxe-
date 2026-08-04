@@ -18,8 +18,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   subtotal,
   onCompleteOrder,
 }) => {
-  if (!isOpen || cartItems.length === 0) return null;
-
   const [step, setStep] = useState<'shipping' | 'payment' | 'gateway' | 'confirmation'>('shipping');
   const [promoCode, setPromoCode] = useState('');
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -36,9 +34,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     notes: 'Titipkan di Resepsionis Klinik / Garasi Rumah',
   });
 
-  const [paymentMethod, setPaymentMethod] = useState<'Midtrans QRIS Instant' | 'Midtrans BCA Virtual Account' | 'Midtrans Mandiri / BRI / BNI VA' | 'Midtrans E-Wallet (GoPay & ShopeePay)' | 'Midtrans Kartu Kredit (3DS 2.0)' | 'COD Luxe Express'>('Midtrans QRIS Instant');
+  const [paymentMethod, setPaymentMethod] = useState<string>('Midtrans QRIS Instant');
   const [createdOrder, setCreatedOrder] = useState<Order | null>(null);
   const [snapToken, setSnapToken] = useState<string>('');
+  const paymentOptions = paymentService.getSupportedPaymentMethods();
+
+  if (!isOpen || cartItems.length === 0) return null;
 
   const shippingFee = subtotal > 2000000 ? 0 : 50000;
   const grandTotal = Math.max(0, subtotal - discountAmount + shippingFee);
@@ -78,8 +79,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const handleFinalizePaymentWithStatus = (midtransStatus: 'settlement' | 'pending' | 'expire' = 'settlement') => {
     const trackingNo = `JNE-BLR-${Math.floor(10000000 + Math.random() * 90000000)}`;
-    
-    // Call paymentService to compute order status from Midtrans webhook callback simulation
+    const orderNumber = `ATT-BLR-${Math.floor(100000 + Math.random() * 900000)}`;
+    const paymentStatus: Order['paymentStatus'] = midtransStatus === 'settlement' ? 'paid' : midtransStatus === 'pending' ? 'pending' : 'failed';
+    const invoiceNumber = paymentService.buildInvoiceNumber(orderNumber);
+
     const webhookResult = paymentService.processWebhookCallback(`ord-${Date.now()}`, midtransStatus);
     let orderStatus: Order['status'] = webhookResult.orderStatus;
 
@@ -89,10 +92,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
-      orderNumber: `ATT-BLR-${Math.floor(100000 + Math.random() * 900000)}`,
+      orderNumber,
       items: cartItems,
       shippingAddress: address,
       paymentMethod,
+      paymentStatus,
+      invoiceNumber,
+      refundStatus: 'none',
+      paymentHistory: paymentService.buildPaymentHistory(orderNumber, paymentMethod, paymentStatus),
       subtotal,
       discount: discountAmount,
       shippingFee,
@@ -264,17 +271,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             {/* Payment Options */}
             <div className="space-y-2">
-              {[
-                { id: 'Midtrans QRIS Instant', label: '⚡ Midtrans QRIS Instant (BCA Mobile, Livin Mandiri, GoPay, OVO, ShopeePay, Dana)' },
-                { id: 'Midtrans BCA Virtual Account', label: '🏦 Midtrans BCA Virtual Account (Otomatis Verifikasi Lunas Realtime)' },
-                { id: 'Midtrans Mandiri / BRI / BNI VA', label: '🏦 Midtrans Virtual Account (Mandiri Bill / BRI / BNI / Permata)' },
-                { id: 'Midtrans E-Wallet (GoPay & ShopeePay)', label: '📱 Midtrans E-Wallet Direct (GoPay, ShopeePay, OVO, DANA)' },
-                { id: 'Midtrans Kartu Kredit (3DS 2.0)', label: '💳 Midtrans Credit Card 3D Secure (Visa, MasterCard, JCB - Cicilan 0%)' },
-                { id: 'COD Luxe Express', label: '🚚 COD (Cash on Delivery) - Bayar Tunai saat Kurir Tiba di Blora' },
-              ].map((opt) => (
+              {paymentOptions.map((opt) => (
                 <label
                   key={opt.id}
-                  onClick={() => setPaymentMethod(opt.id as any)}
+                  onClick={() => setPaymentMethod(opt.id)}
                   className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
                     paymentMethod === opt.id
                       ? 'border-[#D4AF37] bg-[#FAF3E0]/40 font-bold text-[#8C6B1F]'
@@ -282,13 +282,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   }`}
                 >
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs">{opt.label}</span>
+                    <span className="text-[11px]">{opt.label}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold">{opt.category}</span>
                   </div>
                   <input
                     type="radio"
                     name="payment"
                     checked={paymentMethod === opt.id}
-                    onChange={() => setPaymentMethod(opt.id as any)}
+                    onChange={() => setPaymentMethod(opt.id)}
                     className="accent-[#D4AF37]"
                   />
                 </label>
@@ -487,6 +488,26 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             )}
 
+            {(paymentMethod === 'Xendit QRIS & E-Wallet' || paymentMethod === 'Xendit Virtual Account' || paymentMethod === 'Stripe Card Payment' || paymentMethod === 'Transfer Bank Manual') && (
+              <div className="bg-white p-5 rounded-2xl border border-gray-200 space-y-4">
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-[11px] text-slate-700 space-y-1">
+                  <p className="font-bold text-slate-900">Gateway {paymentMethod} siap diproses</p>
+                  <p>1. Konfirmasi data pemesanan & nominal pembayaran.</p>
+                  <p>2. Sistem akan mengotentikasi payment status secara realtime.</p>
+                  <p>3. Invoice dan riwayat pembayaran otomatis tersimpan di akun Anda.</p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleFinalizePayment}
+                  className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-lg flex items-center justify-center space-x-2"
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Konfirmasi Pembayaran {paymentMethod}</span>
+                </button>
+              </div>
+            )}
+
             <button
               type="button"
               onClick={() => setStep('payment')}
@@ -507,7 +528,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
               <h4 className="font-serif-luxe text-2xl font-bold text-[#1A1A1A]">Transaksi Berhasil!</h4>
               <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded-full inline-block">
-                STATUS: {createdOrder.status === 'COD Luxe Express' ? 'DIPROSES (COD)' : 'VERIFIED / LUNAS 24K'}
+                STATUS: {createdOrder.paymentStatus === 'paid' ? 'VERIFIED / LUNAS 24K' : createdOrder.paymentStatus === 'pending' ? 'PENDING / MENUNGGU KONFIRMASI' : 'FAILED / MEMERLUKAN TINDAKAN'}
               </span>
             </div>
 
@@ -521,6 +542,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 </div>
                 <div className="text-right">
                   <span className="font-mono text-xs font-bold text-[#8C6B1F]">{createdOrder.orderNumber}</span>
+                  <p className="text-[10px] text-gray-400">Invoice: {createdOrder.invoiceNumber || 'AUTO-GENERATED'}</p>
                   <p className="text-[10px] text-gray-400">{new Date(createdOrder.createdAt).toLocaleString('id-ID')}</p>
                 </div>
               </div>
@@ -529,7 +551,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <div className="space-y-1.5 py-1">
                 <span className="font-bold text-[#1A1A1A] block">Detail Item:</span>
                 {createdOrder.items.map((it, idx) => (
-                  <div key={idx} className="flex justify-between text-[11px] text-gray-700">
+                  <div key={`${it.product.id}-${idx}`} className="flex justify-between text-[11px] text-gray-700">
                     <span>{it.quantity}x {it.product.name}</span>
                     <span className="font-mono font-semibold">{formatIDR(it.product.price * it.quantity)}</span>
                   </div>
@@ -560,8 +582,31 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <span>Total Diterima Gateway:</span>
                   <span className="text-[#8C6B1F] font-mono text-sm">{formatIDR(createdOrder.grandTotal)}</span>
                 </div>
-                <p className="text-[10px] text-gray-400">Metode Pembayaran: {createdOrder.paymentMethod}</p>
+                <div className="flex justify-between text-[11px] text-gray-600">
+                  <span>Metode Pembayaran:</span>
+                  <span className="font-semibold text-gray-800">{createdOrder.paymentMethod}</span>
+                </div>
+                <div className="flex justify-between text-[11px] text-gray-600">
+                  <span>Status Pembayaran:</span>
+                  <span className="font-semibold text-emerald-700 uppercase">{createdOrder.paymentStatus}</span>
+                </div>
+                <div className="flex justify-between text-[11px] text-gray-600">
+                  <span>Refund Status:</span>
+                  <span className="font-semibold text-gray-800">{paymentService.getRefundStatusLabel(createdOrder.refundStatus)}</span>
+                </div>
               </div>
+
+              {createdOrder.paymentHistory && createdOrder.paymentHistory.length > 0 && (
+                <div className="bg-white p-3 rounded-xl border border-[#EADEC9] space-y-2">
+                  <span className="font-bold text-[#1A1A1A] block">Riwayat Pembayaran & Invoice</span>
+                  {createdOrder.paymentHistory.map((entry) => (
+                    <div key={entry.id} className="flex justify-between text-[11px] text-gray-700 border-b border-gray-100 pb-1 last:border-0 last:pb-0">
+                      <span>{entry.note}</span>
+                      <span className="font-mono font-semibold text-[#8C6B1F]">{entry.status}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Print & Action CTAs */}

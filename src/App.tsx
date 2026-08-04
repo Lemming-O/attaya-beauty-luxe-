@@ -175,12 +175,23 @@ export default function App() {
   // Booking Complete Handler
   const handleCompleteBooking = (newBooking: TreatmentBooking) => {
     setBookings(prev => [newBooking, ...prev]);
-    // Add reward points to user
     setUser(prev => ({
       ...prev,
       points: prev.points + 500,
     }));
     showToast(`✓ Janji Treatment #${newBooking.bookingNumber} berhasil dibuat! +500 Poin VIP Added.`);
+  };
+
+  const handleConfirmBooking = (bookingInput: Omit<TreatmentBooking, 'id' | 'bookingNumber' | 'createdAt'>) => {
+    const newBooking: TreatmentBooking = {
+      ...bookingInput,
+      id: `book-${Date.now()}`,
+      bookingNumber: `ATL-BK-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
+      createdAt: new Date().toISOString(),
+    };
+
+    handleCompleteBooking(newBooking);
+    return newBooking;
   };
 
   // Order Complete Handler
@@ -277,6 +288,34 @@ export default function App() {
                   onStartAIScan={() => setActiveTab('advisor')}
                   onBookClinic={() => setActiveTab('clinic')}
                 />
+
+                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="bg-white rounded-3xl border border-[#EADEC9] shadow-xs p-6 sm:p-8 space-y-6">
+                    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3">
+                      <div>
+                        <span className="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Enterprise Customer Journey</span>
+                        <h2 className="font-serif-luxe text-3xl font-bold text-[#1A1A1A]">Ekosistem Fitur Wajib Attaya Beauty Luxe</h2>
+                      </div>
+                      <p className="text-xs text-gray-600 max-w-2xl">
+                        Login, membership, wishlist, keranjang, checkout, tracking, live chat, AI assistant, affiliate, dan ad management terhubung dalam satu pengalaman pelanggan premium.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {[
+                        ['Customer', 'Login pelanggan, register, loyalty point, wishlist, riwayat pembelian, review & kritik saran'],
+                        ['Live Commerce', 'Floating live chat, WhatsApp, Telegram, auto reply, upload gambar & file, status online'],
+                        ['Order & Tracking', 'Checkout aman, resi otomatis, status pengiriman, estimasi ongkir & sampai'],
+                        ['AI & Growth', 'Skin advisor, parfum recommendation, admin analytics, affiliate & ad manager'],
+                      ].map(([title, copy]) => (
+                        <div key={title} className="bg-[#FAF8F5] rounded-2xl border border-[#EADEC9] p-4 space-y-2">
+                          <div className="text-[10px] font-bold uppercase tracking-widest text-[#8C6B1F]">{title}</div>
+                          <p className="text-xs text-gray-700 leading-relaxed">{copy}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
 
                 {/* Promo Space / Space Iklan Carousel Banner */}
                 <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -761,8 +800,9 @@ export default function App() {
       {selectedTreatmentForBooking && (
         <BookingModal
           treatment={selectedTreatmentForBooking}
+          user={user}
           onClose={() => setSelectedTreatmentForBooking(null)}
-          onComplete={handleCompleteBooking}
+          onConfirmBooking={handleConfirmBooking}
         />
       )}
 

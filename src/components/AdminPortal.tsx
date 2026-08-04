@@ -30,8 +30,6 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   onUpdateBookingStatus,
   onUpdateOrderStatus,
 }) => {
-  if (!isOpen) return null;
-
   // Authentication State
   const [passwordInput, setPasswordInput] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -85,6 +83,8 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     tiktokUrl: '',
     tokopediaUrl: '',
   });
+
+  if (!isOpen) return null;
 
   const formatIDR = (price: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(price);
@@ -723,6 +723,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
                         <p className="text-gray-700">Penerima: <strong>{ord.shippingAddress.fullName}</strong> ({ord.shippingAddress.address}, {ord.shippingAddress.city})</p>
                         <p className="text-gray-500">Item: {ord.items.map(i => `${i.product.name} (x${i.quantity})`).join(', ')}</p>
                         <p className="font-bold text-[#8C6B1F]">Total: {formatIDR(ord.grandTotal)} ({ord.paymentMethod})</p>
+                        <div className="text-[11px] text-gray-600 grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                          <span>Status Bayar: <strong className="text-emerald-700 uppercase">{ord.paymentStatus || 'pending'}</strong></span>
+                          <span>Invoice: <strong className="font-mono text-[#8C6B1F]">{ord.invoiceNumber || 'AUTO-GENERATED'}</strong></span>
+                          <span>Refund: <strong>{ord.refundStatus || 'none'}</strong></span>
+                        </div>
                       </div>
 
                       <div className="flex space-x-2">

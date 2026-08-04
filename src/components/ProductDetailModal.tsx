@@ -13,11 +13,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose,
   onAddToCart,
 }) => {
-  if (!product) return null;
-
   const [quantity, setQuantity] = useState(1);
-  const [selectedShade, setSelectedShade] = useState(product.shades ? product.shades[0]?.name : undefined);
+  const [selectedShade, setSelectedShade] = useState(product?.shades ? product.shades[0]?.name : undefined);
   const [added, setAdded] = useState(false);
+
+  if (!product) return null;
 
   const formatIDR = (price: number) => {
     return new Intl.NumberFormat('id-ID', {

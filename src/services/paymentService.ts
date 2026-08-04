@@ -34,12 +34,33 @@ export interface MidtransTransactionResponse {
   createdAt: string;
 }
 
+export interface GatewayOption {
+  id: string;
+  label: string;
+  category: 'MIDTRANS' | 'XENDIT' | 'STRIPE' | 'COD' | 'BANK_TRANSFER' | 'EWALLET';
+}
+
 class PaymentService {
   private config: MidtransSnapConfig = {
     clientKey: ((import.meta as unknown) as { env: Record<string, string> }).env?.VITE_MIDTRANS_CLIENT_KEY || 'SB-Mid-client-ATTAYA123456',
     merchantId: 'G123456789',
     isProduction: false,
   };
+
+  public getSupportedPaymentMethods(): GatewayOption[] {
+    return [
+      { id: 'Midtrans QRIS Instant', label: '⚡ Midtrans QRIS Instant', category: 'MIDTRANS' },
+      { id: 'Midtrans BCA Virtual Account', label: '🏦 Midtrans BCA VA', category: 'MIDTRANS' },
+      { id: 'Midtrans Mandiri / BRI / BNI VA', label: '🏦 Midtrans Bank Transfer VA', category: 'MIDTRANS' },
+      { id: 'Midtrans E-Wallet (GoPay & ShopeePay)', label: '📱 Midtrans E-Wallet', category: 'MIDTRANS' },
+      { id: 'Midtrans Kartu Kredit (3DS 2.0)', label: '💳 Midtrans Credit Card', category: 'MIDTRANS' },
+      { id: 'Xendit QRIS & E-Wallet', label: '📲 Xendit QRIS / E-Wallet', category: 'XENDIT' },
+      { id: 'Xendit Virtual Account', label: '🏦 Xendit Virtual Account', category: 'XENDIT' },
+      { id: 'Stripe Card Payment', label: '💳 Stripe Card Payment', category: 'STRIPE' },
+      { id: 'Transfer Bank Manual', label: '🏛️ Transfer Bank Manual', category: 'BANK_TRANSFER' },
+      { id: 'COD Luxe Express', label: '🚚 COD Luxe Express', category: 'COD' },
+    ];
+  }
 
   /**
    * Generates a Midtrans Snap Token & Transaction Session
@@ -65,6 +86,29 @@ class PaymentService {
     };
 
     return response;
+  }
+
+  public buildInvoiceNumber(orderNumber: string): string {
+    return `INV-ATTAYA-${orderNumber.replace(/[^a-zA-Z0-9]/g, '').slice(-8)}-${new Date().getFullYear()}`;
+  }
+
+  public buildPaymentHistory(orderNumber: string, paymentMethod: string, paymentStatus: Order['paymentStatus']): Array<{ id: string; type: 'payment' | 'refund' | 'invoice'; status: 'pending' | 'paid' | 'failed' | 'refunded' | 'processing'; note: string; timestamp: string; }> {
+    return [
+      {
+        id: `pay-hist-${Date.now()}`,
+        type: 'invoice',
+        status: 'paid',
+        note: `Invoice otomatis dibuat untuk ${orderNumber}`,
+        timestamp: new Date().toISOString(),
+      },
+      {
+        id: `pay-hist-${Date.now() + 1}`,
+        type: 'payment',
+        status: paymentStatus,
+        note: `Pembayaran via ${paymentMethod} telah diproses oleh gateway sistem Attaya Luxe`,
+        timestamp: new Date().toISOString(),
+      },
+    ];
   }
 
   /**
@@ -133,6 +177,19 @@ class PaymentService {
 
   public getClientKey(): string {
     return this.config.clientKey;
+  }
+
+  public getRefundStatusLabel(refundStatus?: 'none' | 'requested' | 'processing' | 'completed'): string {
+    switch (refundStatus) {
+      case 'requested':
+        return 'Refund sedang diajukan';
+      case 'processing':
+        return 'Refund sedang diproses';
+      case 'completed':
+        return 'Refund selesai';
+      default:
+        return 'Tidak ada refund';
+    }
   }
 }
 

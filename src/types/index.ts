@@ -88,6 +88,14 @@ export interface ShippingAddress {
   notes?: string;
 }
 
+export interface PaymentHistoryEntry {
+  id: string;
+  type: 'payment' | 'refund' | 'invoice';
+  status: 'pending' | 'paid' | 'failed' | 'refunded' | 'processing';
+  note: string;
+  timestamp: string;
+}
+
 export interface Order {
   id: string;
   orderNumber: string;
@@ -97,8 +105,12 @@ export interface Order {
   discount: number;
   grandTotal: number;
   status: 'Menunggu Pembayaran' | 'Diproses' | 'Dikirim' | 'Selesai' | 'Dibatalkan';
-  shippingAddress: ShippingAddress;
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
   paymentMethod: string;
+  invoiceNumber?: string;
+  refundStatus?: 'none' | 'requested' | 'processing' | 'completed';
+  paymentHistory?: PaymentHistoryEntry[];
+  shippingAddress: ShippingAddress;
   createdAt: string;
   trackingNumber?: string;
 }
