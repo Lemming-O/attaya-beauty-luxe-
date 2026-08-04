@@ -164,6 +164,7 @@ export default function App() {
         return {
           ...o,
           status,
+          paymentStatus: status === 'Dikirim' || status === 'Selesai' ? 'paid' : o.paymentStatus,
           trackingNumber: status === 'Dikirim' || status === 'Selesai' ? autoResi : o.trackingNumber,
         };
       }

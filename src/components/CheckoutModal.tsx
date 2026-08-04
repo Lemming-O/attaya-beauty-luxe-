@@ -78,16 +78,23 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   };
 
   const handleFinalizePaymentWithStatus = (midtransStatus: 'settlement' | 'pending' | 'expire' = 'settlement') => {
-    const trackingNo = `JNE-BLR-${Math.floor(10000000 + Math.random() * 90000000)}`;
     const orderNumber = `ATT-BLR-${Math.floor(100000 + Math.random() * 900000)}`;
-    const paymentStatus: Order['paymentStatus'] = midtransStatus === 'settlement' ? 'paid' : midtransStatus === 'pending' ? 'pending' : 'failed';
+    const isCod = paymentMethod === 'COD Luxe Express';
+    const trackingNo = paymentService.buildTrackingNumber(orderNumber);
     const invoiceNumber = paymentService.buildInvoiceNumber(orderNumber);
+    const paymentStatus: Order['paymentStatus'] = isCod
+      ? 'pending'
+      : midtransStatus === 'settlement'
+        ? 'paid'
+        : midtransStatus === 'pending'
+          ? 'pending'
+          : 'failed';
 
-    const webhookResult = paymentService.processWebhookCallback(`ord-${Date.now()}`, midtransStatus);
+    const webhookResult = paymentService.processWebhookCallback(`ord-${Date.now()}`, isCod ? 'pending' : midtransStatus);
     let orderStatus: Order['status'] = webhookResult.orderStatus;
 
-    if (paymentMethod === 'COD Luxe Express') {
-      orderStatus = 'Menunggu Pembayaran';
+    if (isCod) {
+      orderStatus = 'Diproses';
     }
 
     const newOrder: Order = {

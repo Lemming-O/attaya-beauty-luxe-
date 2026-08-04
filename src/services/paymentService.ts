@@ -92,6 +92,11 @@ class PaymentService {
     return `INV-ATTAYA-${orderNumber.replace(/[^a-zA-Z0-9]/g, '').slice(-8)}-${new Date().getFullYear()}`;
   }
 
+  public buildTrackingNumber(orderNumber: string): string {
+    const suffix = orderNumber.replace(/[^a-zA-Z0-9]/g, '').slice(-6).toUpperCase();
+    return `ATL-EXP-${suffix}-${Math.floor(100000 + Math.random() * 900000)}`;
+  }
+
   public buildPaymentHistory(orderNumber: string, paymentMethod: string, paymentStatus: Order['paymentStatus']): Array<{ id: string; type: 'payment' | 'refund' | 'invoice'; status: 'pending' | 'paid' | 'failed' | 'refunded' | 'processing'; note: string; timestamp: string; }> {
     return [
       {
