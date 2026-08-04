@@ -15,6 +15,8 @@ const KEYS = {
   ADMIN_PASS: 'attaya_admin_pass_v1',
 };
 
+const envAdminPassword = ((import.meta as unknown) as { env?: Record<string, string> }).env?.VITE_ADMIN_PASSWORD || 'ATTAYA2026';
+
 // Initialize default storage if empty
 export const initializeStorage = () => {
   if (!localStorage.getItem(KEYS.PRODUCTS)) {
@@ -36,7 +38,7 @@ export const initializeStorage = () => {
     localStorage.setItem(KEYS.BANNERS, JSON.stringify(INITIAL_AD_BANNERS));
   }
   if (!localStorage.getItem(KEYS.ADMIN_PASS)) {
-    localStorage.setItem(KEYS.ADMIN_PASS, 'ATTAYA2026');
+    localStorage.setItem(KEYS.ADMIN_PASS, envAdminPassword);
   }
   if (!localStorage.getItem(KEYS.BOOKINGS)) {
     // Default initial booking
@@ -294,7 +296,7 @@ export const saveBanners = (banners: AdBanner[]): AdBanner[] => {
 // Admin Password API
 export const getAdminPassword = (): string => {
   initializeStorage();
-  return localStorage.getItem(KEYS.ADMIN_PASS) || 'ATTAYA2026';
+  return localStorage.getItem(KEYS.ADMIN_PASS) || envAdminPassword;
 };
 
 export const saveAdminPassword = (newPassword: string): void => {
