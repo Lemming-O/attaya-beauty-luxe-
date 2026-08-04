@@ -95,11 +95,11 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const currentPass = storageService.getAdminPassword();
-    if (passwordInput === currentPass || passwordInput === 'ATTAYA2026') {
+    if (passwordInput.trim() === currentPass) {
       setIsAuthenticated(true);
       setPassError('');
     } else {
-      setPassError('Password salah! Coba password default: ATTAYA2026');
+      setPassError('Password salah! Silakan cek konfigurasi admin password di environment.');
     }
   };
 
@@ -215,7 +215,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
 
           <div>
             <h3 className="font-serif-luxe text-2xl font-bold text-[#1A1A1A]">Akses Portal Admin</h3>
-            <p className="text-xs text-gray-500 mt-1">Masukkan password keamanan untuk mengelola sistem Attaya Luxe.</p>
+            <p className="text-xs text-gray-500 mt-1">Masukkan password keamanan yang diset via environment deployment untuk mengelola sistem Attaya Luxe.</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4 text-xs">
@@ -235,7 +235,7 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             >
               Masuk Dashboard Admin
             </button>
-            <p className="text-[10px] text-gray-400 font-mono">*Default Password: ATTAYA2026</p>
+            <p className="text-[10px] text-gray-400 font-mono">*Password admin diambil dari konfigurasi environment deployment.</p>
           </form>
         </div>
       </div>
