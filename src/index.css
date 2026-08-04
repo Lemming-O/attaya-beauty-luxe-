@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #FAF8F5;
+    color: #1A1A1A;
+  }
+  
+  h1, h2, h3, .font-serif-luxe {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* Custom Luxury Gradients & Accents */
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #DFBA48 0%, #C5A059 50%, #9B782B 100%);
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #C5A059 50%, #AA8232 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-rose-gold-gradient {
+  background: linear-gradient(135deg, #E8A5AC 0%, #B76E79 50%, #914853 100%);
+}
+
+.text-rose-gold-gradient {
+  background: linear-gradient(135deg, #D48C95 0%, #B76E79 50%, #8C434F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-luxury-dark {
+  background-color: #141414;
+}
+
+.border-gold-subtle {
+  border-color: rgba(212, 175, 55, 0.25);
+}
+
+.shadow-luxe {
+  box-shadow: 0 10px 30px -5px rgba(197, 160, 89, 0.08), 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.shadow-luxe-hover:hover {
+  box-shadow: 0 20px 40px -10px rgba(197, 160, 89, 0.18), 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B76E79;
+}
+

@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  attaya-beauty-luxe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: attaya_beauty_luxe_app
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MIDTRANS_SERVER_KEY=${MIDTRANS_SERVER_KEY:-SB-Mid-server-XXXXX}
+      - MIDTRANS_CLIENT_KEY=${MIDTRANS_CLIENT_KEY:-SB-Mid-client-YYYYY}
+      - MIDTRANS_MERCHANT_ID=${MIDTRANS_MERCHANT_ID:-G123456789}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

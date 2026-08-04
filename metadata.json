@@ -1,0 +1,6 @@
+{
+  "name": "Attaya Beauty Luxe",
+  "description": "Enterprise Luxury Beauty, Cosmetics, Perfume, Skincare & Clinic Platform with AI Skin Analysis",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
