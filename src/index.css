@@ -69,8 +69,15 @@
 }
 
 @media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
   body {
     background: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .no-print {
@@ -84,17 +91,16 @@
     font-size: 12px;
   }
 
-  .print-receipt .rounded-2xl,
-  .print-receipt .rounded-xl,
-  .print-receipt .rounded-3xl {
-    border-radius: 0 !important;
+  .print-receipt * {
     box-shadow: none !important;
   }
 
-  .print-receipt .bg-[#FAF8F5],
-  .print-receipt .bg-white,
-  .print-receipt .bg-gray-50 {
+  .print-receipt [class*="bg-"] {
     background: #ffffff !important;
+  }
+
+  .print-receipt [class*="rounded-"] {
+    border-radius: 0 !important;
   }
 }
 
