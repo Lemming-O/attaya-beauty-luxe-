@@ -133,6 +133,13 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
         {/* VIEW 1: ORDER SUMMARY */}
         {activeView === 'summary' && (
           <div className="space-y-4 text-xs animate-fade-in">
+            <div className="print-only hidden border-b border-[#D4AF37]/40 pb-4 mb-2">
+              <div className="text-center space-y-1">
+                <h4 className="font-serif-luxe text-2xl font-bold text-[#1A1A1A]">Attaya Beauty Luxe Blora</h4>
+                <p className="text-[11px] text-gray-600">Jl. Pemuda No. 45 Alun-Alun Blora • Telp: 0812-9876-5432</p>
+                <p className="text-[11px] text-gray-600">Invoice: {order.invoiceNumber || 'AUTO-GENERATED'} • Resi: {order.trackingNumber || 'AUTO-TRACKING'}</p>
+              </div>
+            </div>
             
             {/* Meta Order Info Bar */}
             <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EADEC9] grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -232,6 +239,16 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
               <div className="flex justify-between items-center text-base font-bold text-[#1A1A1A] border-t pt-2 mt-1">
                 <span>Total Lunas:</span>
                 <span className="text-[#8C6B1F] font-mono text-lg">{formatIDR(order.grandTotal)}</span>
+              </div>
+              <div className="pt-2 border-t text-[11px] text-gray-700 space-y-1">
+                <div className="flex justify-between">
+                  <span>Status Pembayaran:</span>
+                  <span className="font-bold uppercase text-emerald-700">{order.paymentStatus}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Status Pengiriman:</span>
+                  <span className="font-bold uppercase text-[#8C6B1F]">{order.status}</span>
+                </div>
               </div>
             </div>
 

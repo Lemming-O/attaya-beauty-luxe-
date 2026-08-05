@@ -102,5 +102,9 @@
   .print-receipt [class*="rounded-"] {
     border-radius: 0 !important;
   }
+
+  .print-only {
+    display: block !important;
+  }
 }
 
