@@ -67,13 +67,13 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in">
       <div 
-        className="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border border-[#D4AF37]/50 shadow-2xl relative p-6 sm:p-8 space-y-6"
+        className="print-receipt bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border border-[#D4AF37]/50 shadow-2xl relative p-6 sm:p-8 space-y-6"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
+          className="no-print absolute top-4 right-4 z-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
           title="Tutup Modal"
         >
           <X className="w-5 h-5" />
@@ -104,7 +104,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
         </div>
 
         {/* Tab View Selector: Order Summary vs Track Order */}
-        <div className="flex bg-gray-100 p-1 rounded-2xl text-xs font-semibold">
+        <div className="no-print flex bg-gray-100 p-1 rounded-2xl text-xs font-semibold">
           <button
             onClick={() => setActiveView('summary')}
             className={`flex-1 py-2.5 rounded-xl transition-all flex items-center justify-center space-x-1.5 ${
@@ -309,7 +309,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
         )}
 
         {/* Action Buttons Footer */}
-        <div className="space-y-2.5 pt-2 border-t border-gray-100">
+        <div className="no-print space-y-2.5 pt-2 border-t border-gray-100">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {/* Primary Track Order Button */}
             <button
