@@ -119,6 +119,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     setCreatedOrder(newOrder);
     onCompleteOrder(newOrder);
     setStep('confirmation');
+    window.setTimeout(() => {
+      window.print();
+    }, 350);
   };
 
   const handleFinalizePayment = () => {
@@ -140,13 +143,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
+          className="no-print absolute top-4 right-4 z-20 p-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
-        <div className="text-center space-y-1">
+        <div className="no-print text-center space-y-1">
           <span className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-widest bg-[#FAF3E0] px-3 py-0.5 rounded-full border border-[#D4AF37]/30">
             Payment Gateway Terenkripsi SSL 256-Bit
           </span>
@@ -156,7 +159,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         </div>
 
         {/* Step Indicator */}
-        <div className="flex items-center justify-center space-x-2 text-[11px] font-semibold text-gray-500 border-b pb-4">
+        <div className="no-print flex items-center justify-center space-x-2 text-[11px] font-semibold text-gray-500 border-b pb-4">
           <span className={step === 'shipping' ? 'text-[#8C6B1F] font-bold underline' : ''}>1. Alamat</span>
           <span>→</span>
           <span className={step === 'payment' ? 'text-[#8C6B1F] font-bold underline' : ''}>2. Metode Pembayaran</span>
@@ -527,7 +530,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
         {/* STEP 4: DIGITAL RECEIPT INVOICE CONFIRMATION */}
         {step === 'confirmation' && createdOrder && (
-          <div className="space-y-5 py-2 animate-fade-in text-xs">
+          <div className="print-receipt space-y-5 py-2 animate-fade-in text-xs">
             
             <div className="text-center space-y-2 border-b pb-4">
               <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
@@ -617,7 +620,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
 
             {/* Print & Action CTAs */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="no-print grid grid-cols-2 gap-3 pt-2">
               <button
                 onClick={() => window.print()}
                 className="py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-xl text-xs flex items-center justify-center space-x-2"

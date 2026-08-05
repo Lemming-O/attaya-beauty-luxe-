@@ -68,3 +68,33 @@
   background: #B76E79;
 }
 
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-receipt {
+    max-width: 100% !important;
+    margin: 0 auto;
+    padding: 0;
+    font-size: 12px;
+  }
+
+  .print-receipt .rounded-2xl,
+  .print-receipt .rounded-xl,
+  .print-receipt .rounded-3xl {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .print-receipt .bg-[#FAF8F5],
+  .print-receipt .bg-white,
+  .print-receipt .bg-gray-50 {
+    background: #ffffff !important;
+  }
+}
+
