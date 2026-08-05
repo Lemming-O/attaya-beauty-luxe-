@@ -133,11 +133,40 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({
         {/* VIEW 1: ORDER SUMMARY */}
         {activeView === 'summary' && (
           <div className="space-y-4 text-xs animate-fade-in">
-            <div className="print-only hidden border-b border-[#D4AF37]/40 pb-4 mb-2">
+            <div className="print-only border-b border-[#D4AF37]/40 pb-4 mb-2">
               <div className="text-center space-y-1">
                 <h4 className="font-serif-luxe text-2xl font-bold text-[#1A1A1A]">Attaya Beauty Luxe Blora</h4>
                 <p className="text-[11px] text-gray-600">Jl. Pemuda No. 45 Alun-Alun Blora • Telp: 0812-9876-5432</p>
                 <p className="text-[11px] text-gray-600">Invoice: {order.invoiceNumber || 'AUTO-GENERATED'} • Resi: {order.trackingNumber || 'AUTO-TRACKING'}</p>
+              </div>
+            </div>
+
+            <div className="print-only border border-[#D4AF37]/40 rounded-xl p-4 bg-white space-y-3">
+              <div className="flex justify-between text-[11px] font-bold text-[#1A1A1A] border-b pb-2">
+                <span>Nota Pembelian / Pengiriman</span>
+                <span>{new Date(order.createdAt).toLocaleDateString('id-ID')}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-[11px]">
+                <div>
+                  <span className="text-gray-500 block">Nomor Pesanan</span>
+                  <span className="font-bold text-[#1A1A1A]">{order.orderNumber}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Invoice</span>
+                  <span className="font-bold text-[#1A1A1A]">{order.invoiceNumber || 'AUTO-GENERATED'}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Nomor Resi</span>
+                  <span className="font-bold text-[#1A1A1A]">{order.trackingNumber || 'AUTO-TRACKING'}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Pembayaran</span>
+                  <span className="font-bold text-[#1A1A1A]">{order.paymentMethod}</span>
+                </div>
+              </div>
+              <div className="border-t pt-3 flex justify-between text-[11px] text-gray-700">
+                <span>Disiapkan oleh: Attaya Beauty Luxe</span>
+                <span>Tanda tangan: __________</span>
               </div>
             </div>
             
