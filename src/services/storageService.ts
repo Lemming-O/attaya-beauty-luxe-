@@ -37,8 +37,10 @@ export const initializeStorage = () => {
   if (!localStorage.getItem(KEYS.BANNERS)) {
     localStorage.setItem(KEYS.BANNERS, JSON.stringify(INITIAL_AD_BANNERS));
   }
-  if (!localStorage.getItem(KEYS.ADMIN_PASS)) {
+  if (envAdminPassword) {
     localStorage.setItem(KEYS.ADMIN_PASS, envAdminPassword);
+  } else if (!localStorage.getItem(KEYS.ADMIN_PASS)) {
+    localStorage.setItem(KEYS.ADMIN_PASS, '');
   }
   if (!localStorage.getItem(KEYS.BOOKINGS)) {
     // Default initial booking
@@ -296,7 +298,7 @@ export const saveBanners = (banners: AdBanner[]): AdBanner[] => {
 // Admin Password API
 export const getAdminPassword = (): string => {
   initializeStorage();
-  return localStorage.getItem(KEYS.ADMIN_PASS) || envAdminPassword;
+  return envAdminPassword || localStorage.getItem(KEYS.ADMIN_PASS) || '';
 };
 
 export const saveAdminPassword = (newPassword: string): void => {

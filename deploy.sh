@@ -4,10 +4,18 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
-if [ -f .env ]; then
-  set -a
-  . ./.env
-  set +a
+if [ ! -f .env ]; then
+  echo "[0/4] Missing .env file. Copy .env.example to .env and set VITE_ADMIN_PASSWORD before deployment."
+  exit 1
+fi
+
+set -a
+. ./.env
+set +a
+
+if [ -z "${VITE_ADMIN_PASSWORD:-}" ]; then
+  echo "[0/4] VITE_ADMIN_PASSWORD must be set in .env before deployment."
+  exit 1
 fi
 
 PORT="${PORT:-3000}"
