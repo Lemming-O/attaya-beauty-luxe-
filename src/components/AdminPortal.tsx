@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, Plus, Edit, Trash2, CheckCircle2, Clock, AlertCircle, ShoppingBag, Calendar, Activity, DollarSign, Package, Lock, Key, Megaphone, ExternalLink, Image } from 'lucide-react';
+import { X, ShieldCheck, Plus, Edit, Trash2, CheckCircle2, Clock, AlertCircle, ShoppingBag, Calendar, Activity, DollarSign, Package, Lock, Key, Megaphone, ExternalLink, Image, LogOut } from 'lucide-react';
 import { Product, ClinicTreatment, TreatmentBooking, Order, AISkinAnalysisResult, AdBanner } from '../types';
 import { storageService } from '../services/storageService';
 
@@ -197,6 +197,13 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
     }
   };
 
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setPasswordInput('');
+    setPassError('');
+    setPassUpdatedMsg('');
+  };
+
   // PASSWORD PROTECTION OVERLAY
   if (!isAuthenticated) {
     return (
@@ -258,12 +265,23 @@ export const AdminPortal: React.FC<AdminPortalProps> = ({
             </div>
           </div>
 
-          <button
-            onClick={onClose}
-            className="p-2 text-gray-400 hover:text-white rounded-full transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#D4AF37]/40 bg-white/5 text-[#F3D57A] text-xs font-semibold hover:bg-white/10"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              className="p-2 text-gray-400 hover:text-white rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Stats Overview */}
