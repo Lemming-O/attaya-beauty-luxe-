@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Crown, Award, Calendar, ShoppingBag, User, Heart, Sparkles, CheckCircle2 } from 'lucide-react';
+import { X, Crown, Award, Calendar, ShoppingBag, User, Heart, Sparkles, CheckCircle2, Printer } from 'lucide-react';
 import { UserProfile, TreatmentBooking, Order } from '../types';
 
 interface UserAccountModalProps {
@@ -151,6 +151,15 @@ export const UserAccountModal: React.FC<UserAccountModalProps> = ({
                         ))}
                       </div>
                     )}
+
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="w-full mt-1 py-2 px-3 bg-[#141414] text-[#D4AF37] rounded-lg font-bold text-[11px] flex items-center justify-center gap-2"
+                    >
+                      <Printer className="w-4 h-4" />
+                      <span>Cetak Nota / Resi</span>
+                    </button>
                   </div>
                 ))}
               </div>
